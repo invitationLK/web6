@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Surprise | 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500&f[]=clash-display@600&f[]=playfair-display@700,400italic&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --daraz-orange: #ff6801;
+            --gold: #fbbf24;
+            --dark: #0a0a0a;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: #fafaf9;
+            font-family: 'Satoshi', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .playfair { font-family: 'Playfair Display', serif; }
+        .clash { font-family: 'Clash Display', sans-serif; }
+
+        /* --- Background Animation --- */
+        #bg-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; opacity: 0.2;
+            background: radial-gradient(circle at 50% 50%, #4c1d95 0%, #0a0a0a 100%);
+        }
+
+        /* --- Cake Section --- */
+        .cake-area { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .cake { position: relative; width: 220px; height: 120px; background: #6d28d9; border-radius: 110px / 55px; border: 3px solid var(--gold); }
+        .candle { position: absolute; top: -45px; width: 8px; height: 45px; background: var(--gold); border-radius: 4px; cursor: pointer; }
+        .flame { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); width: 12px; height: 18px; background: #fbbf24; border-radius: 50% 50% 20% 20%; box-shadow: 0 0 15px #fbbf24; animation: flicker 0.1s infinite alternate; }
+        @keyframes flicker { 0% { opacity: 0.8; } 100% { transform: translateX(-50%) scale(1.1); } }
+        .extinguished .flame { display: none; }
+
+        /* --- Unlocked Content --- */
+        #locked-content { display: none; opacity: 0; }
+
+        /* --- Gallery --- */
+        .gallery-container { width: 100vw; overflow: hidden; padding: 60px 0; }
+        .photo-strip { display: flex; gap: 20px; width: max-content; }
+        .portrait-img { width: 260px; height: 380px; object-fit: cover; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); }
+
+        /* --- Daraz Voucher Card --- */
+        .voucher-card {
+            max-width: 450px; width: 90%; margin: 80px auto;
+            background: linear-gradient(135deg, #fff 0%, #f3f4f6 100%);
+            border-radius: 24px; color: #333; overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(255, 104, 1, 0.3);
+            position: relative;
+        }
+        .voucher-header { background: var(--daraz-orange); padding: 1.5rem; text-align: center; }
+        .voucher-body { padding: 2.5rem; text-align: center; }
+        .code-box {
+            background: #fdf2f8; border: 2px dashed var(--daraz-orange);
+            padding: 1rem; border-radius: 12px; font-weight: 900;
+            font-size: 1.5rem; color: var(--daraz-orange); letter-spacing: 4px;
+            margin: 1.5rem 0; cursor: pointer; transition: 0.3s;
+        }
+        .code-box:hover { background: #fff; transform: scale(1.02); }
+    </style>
+</head>
+<body>
+
+    <div id="bg-canvas"></div>
+
+    <section class="cake-area" id="wish-section">
+        <div class="text-center mb-12">
+            <h1 class="clash text-5xl mb-4 text-gradient">Make a Wish</h1>
+            <p class="text-stone-500 uppercase tracking-widest text-[10px] font-bold">Extinguish to unlock your gifts</p>
+        </div>
+        <div class="cake">
+            <div class="candle" style="left: 40px;" onclick="blow(this)"><div class="flame"></div></div>
+            <div class="candle" style="left: 105px; top: -55px;" onclick="blow(this)"><div class="flame"></div></div>
+            <div class="candle" style="left: 170px;" onclick="blow(this)"><div class="flame"></div></div>
+        </div>
+    </section>
+
+    <div id="locked-content">
+        
+        <section class="min-h-screen flex items-center justify-center px-6 text-center">
+            <div class="max-w-2xl">
+                <h2 class="playfair italic text-5xl text-gold mb-8">Happy Birthday, Babe.</h2>
+                <div class="space-y-6 text-xl text-stone-300">
+                    <p class="reveal">You are the best unplanned thing in my life.</p>
+                    <p class="reveal">I’m right behind you, praying for your success every day.</p>
+                    <p class="reveal clash text-white text-3xl pt-6">I LOVE YOU 💋</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="gallery-container">
+            <div class="photo-strip" id="strip"></div>
+        </div>
+
+        <section class="pb-24 flex flex-col items-center">
+            <h3 class="clash text-2xl text-white mb-8">Your Birthday Gift</h3>
+            <div class="voucher-card">
+                <div class="voucher-header">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Daraz_Logo.png" alt="Daraz" class="h-8 mx-auto brightness-0 invert">
+                </div>
+                <div class="voucher-body">
+                    <p class="text-xs uppercase tracking-widest text-gray-400 font-bold mb-2">Gift Voucher For Him</p>
+                    <h4 class="text-2xl font-black text-gray-800">SHOPPING SPREE</h4>
+                    
+                    <div class="code-box" id="voucher" onclick="revealVoucher()">••••••••</div>
+                    
+                    <p class="text-[10px] text-gray-500 mb-6 italic">Click the code above to claim your birthday surprise!</p>
+                    
+                    <button class="w-full bg-orange-600 text-white font-bold py-3 rounded-xl shadow-lg hover:bg-orange-700 transition" onclick="window.open('https://www.daraz.lk', '_blank')">
+                        Go to Daraz
+                    </button>
+                </div>
+                <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-orange-100 rounded-full opacity-50"></div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const photos = [
+            "https://i.postimg.cc/sDz53h1K/images-(5).jpg",
+            "https://i.postimg.cc/rFd2FKbD/images-(3).jpg",
+            "https://i.postimg.cc/ydf27HyB/images-(4).jpg",
+            "https://i.postimg.cc/L4G2Ptjf/images-(6).jpg"
+        ];
+
+        let candles = 0;
+
+        function blow(el) {
+            if (el.classList.contains('extinguished')) return;
+            el.classList.add('extinguished');
+            candles++;
+            confetti({ particleCount: 15, origin: { x: 0.5, y: 0.4 }, colors: ['#ff6801', '#fbbf24'] });
+            if (candles === 3) setTimeout(unlock, 800);
+        }
+
+        function unlock() {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            gsap.to("#wish-section", { opacity: 0, y: -50, duration: 1, display: 'none' });
+            gsap.to("#locked-content", { display: 'block', opacity: 1, duration: 1, onComplete: () => {
+                gsap.from(".reveal", { opacity: 0, y: 20, stagger: 0.3 });
+                initGallery();
+            }});
+        }
+
+        function initGallery() {
+            const strip = document.getElementById('strip');
+            const content = [...photos, ...photos, ...photos].map(src => `<img src="${src}" class="portrait-img">`).join('');
+            strip.innerHTML = content;
+            gsap.to(strip, { x: "-33.33%", duration: 25, ease: "none", repeat: -1 });
+        }
+
+        function revealVoucher() {
+            const v = document.getElementById('voucher');
+            // REPLACE 'BDAY-HVM-2026' WITH YOUR ACTUAL VOUCHER CODE
+            v.innerText = "HBD-HVM-2026";
+            v.style.background = "#fff";
+            confetti({ particleCount: 100, spread: 60, colors: ['#ff6801'] });
+            v.onclick = null; // Disable further clicks
+        }
+    </script>
+</body>
+</html>
